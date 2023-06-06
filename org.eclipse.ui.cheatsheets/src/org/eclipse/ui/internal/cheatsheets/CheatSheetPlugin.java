@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2002, 2019 IBM Corporation and others.
+ *  Copyright (c) 2002, 2023 IBM Corporation and others.
  *
  *  This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License 2.0
@@ -268,15 +268,14 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 	 */
 	public XMLMemento readMemento(String filename) {
 		XMLMemento memento;
-		InputStreamReader reader = null;
 
 		try {
 			// Read the cheatsheet state file.
 			final File stateFile = getCheatSheetStateFile(filename);
 
-			FileInputStream input = new FileInputStream(stateFile);
-			reader = new InputStreamReader(input, StandardCharsets.UTF_8);
-			memento = XMLMemento.createReadRoot(reader);
+			try(InputStreamReader reader = new InputStreamReader(new FileInputStream(stateFile), StandardCharsets.UTF_8)){
+				memento = XMLMemento.createReadRoot(reader);
+			}
 
 
 		} catch (FileNotFoundException e) {
@@ -286,15 +285,6 @@ public class CheatSheetPlugin extends AbstractUIPlugin {
 			String message = Messages.ERROR_READING_STATE_FILE;
 			CheatSheetPlugin.getPlugin().getLog().error(message, e);
 			memento = null;
-		} finally {
-			try {
-				if (reader != null)
-					reader.close();
-			} catch (IOException e) {
-				// Not much to do, just catch the exception and keep going.
-				String message = Messages.ERROR_READING_STATE_FILE;
-				CheatSheetPlugin.getPlugin().getLog().error(message, e);
-			}
 		}
 		return memento;
 	}

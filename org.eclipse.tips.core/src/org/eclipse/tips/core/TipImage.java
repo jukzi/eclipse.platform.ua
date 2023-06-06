@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2017, 2018 Remain Software
+ * Copyright (c) 2017, 2023 Remain Software
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -63,9 +63,10 @@ public class TipImage {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] chunk = new byte[_4KB];
 		int bytesRead;
-		InputStream stream = url.openStream();
-		while ((bytesRead = stream.read(chunk)) > 0) {
-			outputStream.write(chunk, 0, bytesRead);
+		try (InputStream stream = url.openStream()) {
+			while ((bytesRead = stream.read(chunk)) > 0) {
+				outputStream.write(chunk, 0, bytesRead);
+			}
 		}
 		fBase64Image = "data:image/" // //$NON-NLS-1$
 				+ getExtension() //

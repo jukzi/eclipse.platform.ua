@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2016 IBM Corporation and others.
+ * Copyright (c) 2007, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -105,29 +105,15 @@ public class ContentDetectHelper {
 
 	private XMLMemento getReadMemento(String filename) {
 		XMLMemento memento;
-		InputStreamReader reader = null;
 
-		try {
-			final File stateFile = getStateFile(filename);
-
-			FileInputStream input = new FileInputStream(stateFile);
-			reader = new InputStreamReader(input, StandardCharsets.UTF_8);
+		try (InputStreamReader reader = new InputStreamReader(new FileInputStream(getStateFile(filename)), StandardCharsets.UTF_8)){
 			memento = XMLMemento.createReadRoot(reader);
-
-
 		} catch (FileNotFoundException e) {
 			memento = null;
 			// Do nothing, the file will not exist the first time the workbench in used.
 		} catch (Exception e) {
 			// TODO should we log an error?
 			memento = null;
-		} finally {
-			try {
-				if (reader != null)
-					reader.close();
-			} catch (IOException e) {
-				// TODO should we log an error?
-			}
 		}
 		return memento;
 	}

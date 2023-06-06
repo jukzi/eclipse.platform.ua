@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Manumitting Technologies Inc and others.
+ * Copyright (c) 2016, 2023 Manumitting Technologies Inc and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -450,9 +450,9 @@ public class QuicklinksViewer implements IIntroContentProvider {
 		}
 		try {
 			File tempFile = File.createTempFile("qlink", "png"); //$NON-NLS-1$ //$NON-NLS-2$
-			FileOutputStream fos = new FileOutputStream(tempFile);
-			fos.write(output.toByteArray());
-			fos.close();
+			try (FileOutputStream fos = new FileOutputStream(tempFile)){
+				fos.write(output.toByteArray());
+			}
 			tempFile.deleteOnExit();
 			return tempFile.toURI().toString();
 		} catch (IOException e) {

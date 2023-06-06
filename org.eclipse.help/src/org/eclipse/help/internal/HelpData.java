@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2019 IBM Corporation and others.
+ * Copyright (c) 2006, 2023 IBM Corporation and others.
  *
  * This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -175,8 +175,9 @@ public class HelpData {
 		if (url != null) {
 			try {
 				SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-				InputStream in = url.openStream();
-				parser.parse(in, new Handler());
+				try (InputStream in = url.openStream()) {
+					parser.parse(in, new Handler());
+				}
 			}
 			catch (Throwable t) {
 				String msg = "Error loading help data file \"" + url + "\""; //$NON-NLS-1$ //$NON-NLS-2$
